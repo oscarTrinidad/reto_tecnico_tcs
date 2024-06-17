@@ -54,7 +54,7 @@
         <ion-card>
           <ion-card-content>
             <ion-list *ngIf="aListTareas.length>0">
-              <ion-item *ngFor="let tarea of aListTareas; let i = index" [color]="idTarea === tarea.id? 'tertiary' : 'light'">
+              <ion-item *ngFor="let tarea of aListTareas; let i = index" [color]="idTarea === tarea.id? 'medium' : 'light'">
                 <ion-checkbox slot="start" [(ngModel)]="tarea.check" (ionChange)="completarTarea($event,i)"
                 [disabled]="idTarea === tarea.id"></ion-checkbox>
                 &nbsp;&nbsp;
@@ -62,10 +62,12 @@
                 <span *ngIf="tarea.tiempo !== 0">
                   |&nbsp;&nbsp;<ion-icon name="time-outline"></ion-icon>&nbsp;{{ tarea.tiempo }}&nbsp;seg
                 </span>&nbsp;
-                <ion-button (click)="iniciarTarea(tarea)" *ngIf="administrador && tarea.check && tarea.estado === 1" color="success" fill="clear">
+                <ion-button (click)="iniciarTarea(tarea)" *ngIf="administrador && tarea.check && tarea.estado === 1" 
+                color="success" fill="clear" [disabled]="idTarea === tarea.id">
                   Iniciar Tarea
                 </ion-button>
-                <ion-button (click)="cancelarTarea(tarea)" *ngIf="administrador && tarea.estado === 2 && tarea.check" color="medium" fill="clear">
+                <ion-button (click)="cancelarTarea(tarea)" *ngIf="administrador && tarea.estado === 2 && tarea.check" 
+                color="medium" fill="clear" [disabled]="idTarea === tarea.id">
                   Cancelar Solicitud
                 </ion-button>
 
