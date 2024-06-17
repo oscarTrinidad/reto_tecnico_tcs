@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar color="tertiary">
+    <ion-title>LISTA DE TAREAS</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="oUsuario" color="success" fill="solid">
+        {{ oUsuario.perfil === 1? 'ADMIN: ': 'GESTOR: ' }} {{ oUsuario.usuario }}
+      </ion-button>
+      <ion-button color="light" fill="clear" (click)="cerrarSesion()">
+        Cerrar Sesión
+      </ion-button>
+      <!-- <ion-button *ngIf="user$ | async as user">
+        {{ user.usuario }}
+      </ion-button> -->
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content color="secondary">
+  <ion-grid>
+    <ion-row>
+      <ion-col sizeXs="12" sizeSm="12" sizeMd="8" sizeLg="7" sizeXl="6">
+        <ion-card>
+          <ion-card-content>
+            <ion-row>
+              <ion-col sizeXs="8" sizeSm="8" sizeMd="9" sizeLg="9" sizeXl="9">
+                <ion-item>
+                  <ion-label position="floating">Tarea</ion-label>
+                  <ion-input type="text" [(ngModel)]="sTarea" (keyup.enter)="agregarTarea()" 
+                  (input)="validarInput($event,'descripcion')"
+                  pattern="[A-Za-z0-9]*"></ion-input>
+                </ion-item>
+                <ion-item *ngIf="administrador">
+                  <ion-label position="floating">Tiempo (segundos)</ion-label>
+                  <ion-input type="text" [(ngModel)]="iTiempo" (keyup.enter)="agregarTarea()" 
+                  (input)="validarInput($event,'tiempo')"
+                  pattern="[0-9]*"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col sizeXs="4" sizeSm="4" sizeMd="3" sizeLg="3" sizeXl="3">
+                <div class="boton-container text-center" *ngIf="!editar">
+                  <ion-button (click)="agregarTarea()" color="success">Agregar</ion-button>
+                </div>
+                <div class="text-center" *ngIf="editar">
+                  <ion-button expand="full" (click)="cancelarEdicion()" color="danger">Cancelar</ion-button>
+                  <ion-button expand="full" (click)="agregarTarea()">Editar</ion-button>
+                </div>
+              </ion-col>
+            </ion-row>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col sizeXs="12" sizeSm="12" sizeMd="10" sizeLg="10" sizeXl="9">
+        <ion-card>
+          <ion-card-content>
+            <ion-list *ngIf="aListTareas.length>0">
+              <ion-item *ngFor="let tarea of aListTareas; let i = index" [color]="idTarea === tarea.id? 'tertiary' : 'light'">
+                <ion-checkbox slot="start" [(ngModel)]="tarea.check" (ionChange)="completarTarea($event,i)"
+                [disabled]="idTarea === tarea.id"></ion-checkbox>
+                &nbsp;&nbsp;
+                <span>{{ tarea.descripcion }}</span>&nbsp;&nbsp;
+                <span *ngIf="tarea.tiempo !== 0">
+                  |&nbsp;&nbsp;<ion-icon name="time-outline"></ion-icon>&nbsp;{{ tarea.tiempo }}&nbsp;seg
+                </span>&nbsp;
+                <ion-button (click)="iniciarTarea(tarea)" *ngIf="administrador && tarea.check && tarea.estado === 1" color="success" fill="clear">
+                  Iniciar Tarea
+                </ion-button>
+                <ion-button (click)="cancelarTarea(tarea)" *ngIf="administrador && tarea.estado === 2 && tarea.check" color="medium" fill="clear">
+                  Cancelar Solicitud
+                </ion-button>
+
+                <ion-badge slot="end" color="warning" *ngIf="tarea.estado === 2">Solicitada</ion-badge>
+                <ion-badge slot="end" color="success" *ngIf="tarea.estado === 3">Iniciada</ion-badge>
+
+                <ion-button slot="end" *ngIf="administrador && tarea.estado===1" (click)="traerTarea(tarea)" 
+                [disabled]="idTarea === tarea.id">
+                  <ion-icon name="create-outline"></ion-icon>
+                </ion-button>
+                <ion-button color="danger" slot="end" *ngIf="!tarea.check && (tarea.estado===1 || tarea.estado===3)" (click)="eliminarTarea(i)" 
+                [disabled]="idTarea === tarea.id">
+                  <ion-icon name="close-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+            <ion-item *ngIf="aListTareas.length === 0">
+              Sin tareas registradas ....
+            </ion-item>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

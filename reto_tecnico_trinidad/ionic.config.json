@@ -1,0 +1,7 @@
+{
+  "name": "reto_tecnico_trinidad",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
